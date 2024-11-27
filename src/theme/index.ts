@@ -1,13 +1,13 @@
 import { createTheme } from '@shopify/restyle';
 
 export const palette = {
-    primary100: '#E3F7FA',
-    primary300: '#87E2EE',
-    primary400: '#39C7DB',
-    primary500: '#00AEC7',
-    primary700: '#005966',
+    primary100: '#1A1A1A',
+    primary300: '#333333',
+    primary400: '#4D4D4D',
+    primary500: '#666666',
+    primary700: '#000000',
 
-    'primary500-10%': 'rgba(0, 174, 199, 0.1)',
+    'primary500-10%': 'rgba(102, 102, 102, 0.1)',
 
     neutral100: '#E5EBF1',
     neutral200: '#E0E4EA',

@@ -2,10 +2,11 @@ import React from 'react';
 import { Dimensions, KeyboardAvoidingView, Platform } from 'react-native';
 
 import { useAppSafeArea, useAppTheme } from '../../../hooks';
-import { Logo, LogoPresets } from '../../atoms/Logo/Logo';
-import { ScrollViewContainer, ViewContainer } from './components/ScreenContainer';
-import { Box, BoxProps } from '../../atoms/Box/Box';
 import { ActivityIndicator } from '../../atoms/ActivityIndicator/ActivityIndicator';
+import { Box, BoxProps } from '../../atoms/Box/Box';
+import { Logo, LogoPresets } from '../../atoms/Logo/Logo';
+
+import { ScrollViewContainer, ViewContainer } from './components/ScreenContainer';
 
 const { width } = Dimensions.get('window');
 
@@ -14,7 +15,7 @@ interface ScreenProps extends BoxProps {
   canGoBack?: boolean;
   scrollable?: boolean;
   logoPreset?: LogoPresets
-  isLoading: boolean
+  isLoading?: boolean
   hasContentHeader?: boolean
   contentBottom?: React.ReactNode
   hasProgressBarBottom?: boolean
