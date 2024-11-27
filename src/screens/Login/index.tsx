@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
 import { Button, FormTextInput, Screen, Text } from '@/components';
+import { useAuthContext } from '@/contexts/Auth/AuthContext';
 import { LoginSchema } from '@/utils/validations/loginSchema';
 import { loginSchema } from '@/utils/validations/loginSchema';
 
@@ -13,9 +14,11 @@ export default function Login() {
         resolver: zodResolver(loginSchema),
     });
 
-    const onLogin = useCallback(() => {
-        console.log('login');
-    }, []);
+    const { signIn } = useAuthContext();
+
+    const onLogin = useCallback((data: LoginSchema) => {
+        signIn(data.username, data.password);
+    }, [signIn]);
 
     return (
         <Screen>

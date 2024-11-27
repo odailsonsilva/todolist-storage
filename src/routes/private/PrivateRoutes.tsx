@@ -13,7 +13,7 @@ function TabCustom(props: BottomTabBarProps) {
 
 export default function PrivateRoutes() {
     return (
-        <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={TabCustom}>
+        <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={TabCustom} initialRouteName="Home">
             <Tab.Screen name="Sync" component={SyncDataScreen} />
             <Tab.Screen name="Home" component={TodoScreen} />
             <Tab.Screen name="Settings" component={SettingsScreen} />
