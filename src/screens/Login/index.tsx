@@ -14,14 +14,14 @@ export default function Login() {
         resolver: zodResolver(loginSchema),
     });
 
-    const { signIn } = useAuthContext();
+    const { signIn, isLoading } = useAuthContext();
 
     const onLogin = useCallback((data: LoginSchema) => {
         signIn(data.username, data.password);
     }, [signIn]);
 
     return (
-        <Screen>
+        <Screen isLoading={isLoading}>
             <Text preset="titleLg" marginTop="s32">
                 Login
             </Text>

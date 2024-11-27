@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import NetInfo from '@react-native-community/netinfo';
 
+import { useAuthContext } from '../Auth/AuthContext';
 import { useToast } from '../Toast/ToastContext';
 
 import { OfflineContext } from './OfflineContext';
@@ -10,6 +11,7 @@ import { useConfirmation } from '@/hooks/useConfirmation';
 import { ITodoDTO } from '@/models';
 import { apiTodo } from '@/services/Todo/apiTodo';
 import { useTodoDB, IDBTask } from '@/services/Todo/dbTodo';
+import { useUserDB } from '@/services/User/dbUser';
 
 
 export const OfflineProvider = ({ children }: { children: React.ReactNode }) => {
@@ -25,6 +27,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
     });
 
     const dbTodo = useTodoDB();
+    const { user } = useAuthContext();
 
     const addTask = (task: ITodoDTO) => {
         try {
@@ -65,7 +68,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
 
     const fetchAndStoreTasks = async () => {
         try {
-            const serverTasks: ITodoDTO[] = await apiTodo.getTodos();
+            const serverTasks: ITodoDTO[] = await apiTodo.getTodos(user?.id!);
             const formattedTasks = serverTasks.map(serverTask => ({
                 synced: true,
                 _id: serverTask.id!.toString(),
@@ -92,7 +95,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
     const onSyncServerByTask = async (task: IDBTask) => {
         try {
             const todo: ITodoDTO = {
-                userId: 1,
+                userId: Number(user?.id!),
                 title: task.title,
                 completed: task.completed,
             };
@@ -122,7 +125,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
             const unsyncedTasks = dbTodo.getTasks().filter((task: IDBTask) => !task.synced);
             for (let task of unsyncedTasks) {
                 const todo: ITodoDTO = {
-                    userId: 1,
+                    userId: Number(user?.id!),
                     title: task.title,
                     completed: task.completed,
                 };

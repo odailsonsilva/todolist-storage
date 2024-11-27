@@ -5,7 +5,7 @@ import { UserSchema } from './Schemas/User';
 
 const config = {
     schema: [TaskSchema, UserSchema],
-    schemaVersion: 11,
+    schemaVersion: 12,
 };
 
 export const { RealmProvider, useObject, useQuery, useRealm } = createRealmContext(config);

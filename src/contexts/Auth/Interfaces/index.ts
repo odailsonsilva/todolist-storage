@@ -5,4 +5,5 @@ export interface IAuthContext {
     signIn: (email: string, password: string) => Promise<void>;
     signOut: () => void;
     isAuthenticated: boolean;
+    isLoading: boolean;
 }

@@ -2,9 +2,9 @@ import { api } from '@/libs/axios';
 import { ITodoDTO } from '@/models';
 import { ENDPOINTS } from '@/utils/endpoints';
 
-const getTodos = async (): Promise<ITodoDTO[]> => {
+const getTodos = async (userId: number | string): Promise<ITodoDTO[]> => {
     const response = await api.get(ENDPOINTS.TODOS);
-    return response.data?.filter((todo: ITodoDTO) => todo.userId === 1);
+    return response.data?.filter((todo: ITodoDTO) => String(todo.userId) === String(userId));
 };
 
 const createTodo = async (todo: ITodoDTO) => {
@@ -17,7 +17,7 @@ const updateTodo = async (todo: ITodoDTO) => {
     return response;
 };
 
-const deleteTodo = async (id: number) => {
+const deleteTodo = async (id: number | string) => {
     const response = await api.delete(`${ENDPOINTS.TODOS}/${id}`);
     return response;
 };

@@ -12,22 +12,19 @@ import { useUserDB } from '@/services/User/dbUser';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<IUserDTO | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const { updateModalStateAndOpenModal, renderModal } = useConfirmation({
-        title: 'Sync Data',
-        description: 'You have unsynced data, do you want make logout?',
-        confirm: 'Logout',
-        cancel: 'Cancel',
-    });
+    const { updateModalStateAndOpenModal, renderModal } = useConfirmation({});
     const { showToast } = useToast();
 
     const dbUser = useUserDB();
-    const { getTasks } = useTodoDB();
+    const { getTasks, deleteAllTasks } = useTodoDB();
 
     const signIn = async (email: string, password: string) => {
         try {
             const userSaved = await apiUser.signUp(email, password);
+            dbUser.createUser(userSaved);
             setUser(userSaved);
             setIsAuthenticated(true);
         } catch (error) {
@@ -40,23 +37,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const signOut = () => {
-        if (getTasks().length > 0) {
-            updateModalStateAndOpenModal({
-                onConfirm: () => {
-                    setUser(null);
-                    setIsAuthenticated(false);
-                },
-            });
-        }
+        const hasUnsyncedTasks = getTasks().filter((task) => !task.synced).length > 0;
+        updateModalStateAndOpenModal({
+            onConfirm: () => {
+                setUser(null);
+                setIsAuthenticated(false);
+                deleteAllTasks();
+                dbUser.deleteUser();
+            },
+            title: hasUnsyncedTasks ? 'Sync Data' : 'Logout',
+            description: hasUnsyncedTasks ? 'You have unsynced data, do you want make logout?' : 'Do you want make logout?',
+            confirm: 'Logout',
+            cancel: 'Cancel',
+        });
     };
 
     const getUser = async () => {
-        const userDb = dbUser.getUser();
+        setIsLoading(true);
+        const userDb = await dbUser.getUser();
 
         if (userDb) {
             setUser(userDb);
             setIsAuthenticated(true);
         }
+        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -64,7 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, signIn, signOut, isAuthenticated }}>
+        <AuthContext.Provider value={{ user, signIn, signOut, isAuthenticated, isLoading }}>
             {children}
             {renderModal()}
         </AuthContext.Provider>
