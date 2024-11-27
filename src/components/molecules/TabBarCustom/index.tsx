@@ -18,10 +18,9 @@ import { mapScreenToPropsApp } from '@/utils/tabBarData/privateMapScreenProps';
 const { width } = Dimensions.get('window');
 
 export type AppTabBottomTabParamListApp = {
-    Carga: undefined;
-    Leitura: undefined;
-    Envio: undefined;
-    Configuracao: undefined;
+    Home: undefined;
+    Sync: undefined;
+    Settings: undefined;
 };
 
 export function AppTabBarApp({
@@ -81,9 +80,9 @@ export function AppTabBarApp({
                             justifyContent="center"
                         >
                             <Icon
-                                color={isFocused ? 'primary' : 'backgroundContrast'}
+                                color={isFocused ? 'primaryContrast' : 'backgroundContrast'}
                                 size={28}
-                                name={isFocused ? tabItem.icon.focused : tabItem.icon.unfocused}
+                                name={isFocused ? tabItem.icon?.focused : tabItem.icon?.unfocused}
                             />
                         </Box>
                         <Text

@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,11 +23,11 @@ export default function Login() {
                 Login
             </Text>
             <Text preset="bodyMd" marginTop="s8">
-                Insira seu nome de usuário e senha
+                Enter your username and password
             </Text>
 
             <FormTextInput
-                label="Nome de Usuário"
+                label="Username"
                 control={control}
                 name="username"
                 icon="accountCircle"
@@ -36,7 +35,7 @@ export default function Login() {
             />
 
             <FormTextInput
-                label="Senha"
+                label="Password"
                 control={control}
                 secureTextEntry
                 name="password"

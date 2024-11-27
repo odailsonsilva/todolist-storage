@@ -11,41 +11,27 @@ export const mapScreenToPropsApp: Record<
         };
     }
 > = {
-    Carga: {
-        label: 'Carga',
+    Sync: {
+        label: 'Sync Data',
         icon: {
-            focused: 'carga',
-            unfocused: 'carga',
+            focused: 'backup',
+            unfocused: 'backup',
         },
     },
-    Leitura: {
-        label: 'Leitura',
-        icon: {
-            focused: 'leitura',
-            unfocused: 'leitura',
-        },
-    },
-    Envio: {
-        label: 'Envio',
+    Home: {
+        label: 'Home',
         icon: {
             focused: 'envio',
             unfocused: 'envio',
         },
     },
-    Configuracao: {
-        label: 'Configurações',
+    Settings: {
+        label: 'Settings',
         icon: {
             focused: 'config',
             unfocused: 'config',
         },
     },
-    // TODO REMOVER
-    // Sync: {
-    //   label: 'Sync',
-    //   icon: {
-    //     focused: 'config',
-    //     unfocused: 'config',
-    //   },
-    // },
+
 };
 

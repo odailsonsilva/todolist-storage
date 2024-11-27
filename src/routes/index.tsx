@@ -5,7 +5,7 @@ import PublicRoutes from './public/PublicRoutes';
 
 
 export const AppRoutes = () => {
-    const isAuthenticated = false;
+    const isAuthenticated = true;
 
     return (
         <NavigationContainer>
