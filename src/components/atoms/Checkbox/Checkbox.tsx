@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import { TouchableOpacityBox, TouchableOpacityBoxProps } from '../Box/Box';
+import { Box, TouchableOpacityBox, TouchableOpacityBoxProps } from '../Box/Box';
 import { Text, TextProps } from '../Text';
 
-export interface RadioProps extends TouchableOpacityBoxProps {
+export interface CheckboxProps extends TouchableOpacityBoxProps {
     value: string | number;
     selectedValue?: string | number;
     label?: string
@@ -13,9 +13,10 @@ export interface RadioProps extends TouchableOpacityBoxProps {
     textStyles?: Omit<TextProps, 'children'>
 }
 
-export const RadioButton: React.FC<RadioProps> = ({
+export const Checkbox: React.FC<CheckboxProps> = ({
     value,
     selectedValue,
+    orderRadio = 'left',
     label,
     onSelect,
     textStyles,
@@ -25,22 +26,31 @@ export const RadioButton: React.FC<RadioProps> = ({
         onSelect && onSelect(value);
     };
 
+    console.log('selectedValue', selectedValue, value);
+
     return (
         <TouchableOpacityBox
             style={styles.container}
             onPress={handleSelect}
             alignItems="center"
             flexDirection="row"
-            borderWidth={1}
-            paddingHorizontal="s16"
-            paddingLeft="s12"
-            borderRadius={'s24'}
-            height={34}
-            borderColor="neutral700"
-            backgroundColor={value === selectedValue ? 'primary' : 'white100'}
             {...touchableOpacityProps}
         >
-            <Text color={value === selectedValue ? 'white100' : 'neutral700'} ml="s12" mb="s4" {...textStyles}>{label}</Text>
+            {(!!label && orderRadio === 'right') && <Text color={value === selectedValue ? 'primary' : 'neutral700'} mr="s12" mb="s4"  {...textStyles}>{label}</Text>}
+            <Box
+                borderColor="primary"
+                style={[
+                    styles.radioButton,
+                ]}
+            >
+                {value === selectedValue && (
+                    <Box
+                        backgroundColor="primary"
+                        style={styles.selected}
+                    />
+                )}
+            </Box>
+            {(!!label && orderRadio === 'left') && <Text color={value === selectedValue ? 'primary' : 'neutral700'} ml="s12" mb="s4" {...textStyles}>{label}</Text>}
         </TouchableOpacityBox>
     );
 };
@@ -53,15 +63,15 @@ const styles = StyleSheet.create({
     radioButton: {
         width: 20,
         height: 20,
-        borderRadius: 10,
+        borderRadius: 3,
         borderWidth: 2,
         backgroundColor: '#FFF',
         alignItems: 'center',
         justifyContent: 'center',
     },
     selected: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
+        width: 12,
+        height: 12,
+        borderRadius: 2,
     },
 });

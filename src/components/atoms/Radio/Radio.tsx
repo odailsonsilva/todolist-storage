@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
+
 import { Box, TouchableOpacityBox, TouchableOpacityBoxProps } from '../Box/Box';
 import { Text, TextProps } from '../Text';
 
