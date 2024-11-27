@@ -1,25 +1,35 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useMemo } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
-import { Box, Card, Text, TouchableOpacityBox } from '@/components';
+import { Box, Card, Chip, Text, TouchableOpacityBox } from '@/components';
 import { Checkbox } from '@/components/atoms/Checkbox/Checkbox';
+import { EmptyText } from '@/components/atoms/EmptyText';
 import { TodoForm } from '@/components/molecules/TodoForm';
 import { useOfflineContext } from '@/contexts/Offiline/OfflineContext';
+import { IDBTask } from '@/services/Todo/dbTodo';
 import { palette } from '@/theme';
 
-const Item = memo(({ item }: { item: any, index: number }) => {
-    const [isChecked, setIsChecked] = useState(false);
+const Item = memo(({ item }: { item: IDBTask, index: number }) => {
+    const [isChecked] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { editTask } = useOfflineContext();
 
     return (
         <Card mr="s4" >
             <TouchableOpacityBox onPress={() => setIsModalOpen(true)} flexDirection="row" justifyContent="space-between">
                 <Box justifyContent="space-between">
-                    <Text preset="titleLg">{item.name}</Text>
-                    <Text preset="labelSm">{item.name}</Text>
+                    <Text preset="titleLg" ml="s4">{item.title}</Text>
+                    {!item.synced && (
+                        <Chip
+                            preset="update"
+                            mt="s4"
+                        >
+                            This data is not synced
+                        </Chip>
+                    )}
                 </Box>
 
-                <Checkbox value={String(item.id)} selectedValue={String(isChecked ? item.id : undefined)} onPress={() => setIsChecked(!isChecked)} />
+                <Checkbox value={String(item.id)} selectedValue={String(isChecked ? item.id : undefined)} onPress={() => editTask({ ...item, completed: true })} />
             </TouchableOpacityBox>
 
             <TodoForm
@@ -35,15 +45,17 @@ export const NewTodos = () => {
     const { tasks } = useOfflineContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const newTasks = useMemo(() => tasks.filter((task) => task.action !== 'delete' && !task.completed), [tasks]);
+
     return (
         <>
             <FlatList
-                data={tasks}
+                data={newTasks}
                 renderItem={({ item, index }) => <Item item={item} index={index} />}
                 keyExtractor={(item, index) => `${item.id}-${index}`}
                 contentContainerStyle={{ paddingBottom: 20 }}
                 ListEmptyComponent={
-                    <Text style={styles.emptyMessage}>No tasks available</Text>
+                    <EmptyText />
                 }
             />
 
@@ -92,10 +104,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginVertical: 10,
     },
-    emptyMessage: {
-        textAlign: 'center',
-        marginTop: 20,
-        fontSize: 16,
-        color: '#888',
-    },
+
 });

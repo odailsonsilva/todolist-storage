@@ -39,6 +39,7 @@ export function Chip({ preset = 'default', ...touchableOpacityBoxProps }: ChipPa
                 preset="chip"
                 color="white100"
                 mr="s12"
+                mt="s2"
             >
                 {touchableOpacityBoxProps.children}
             </Text>

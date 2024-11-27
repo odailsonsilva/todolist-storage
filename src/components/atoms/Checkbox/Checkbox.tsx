@@ -26,7 +26,6 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         onSelect && onSelect(value);
     };
 
-    console.log('selectedValue', selectedValue, value);
 
     return (
         <TouchableOpacityBox

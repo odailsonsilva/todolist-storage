@@ -1,49 +1,58 @@
-import { realmDB } from '@/libs/realmDB';
+import { useRealm } from '@/libs/realmDB';
 import { ITodoDTO } from '@/models';
 
 export interface IDBTask extends ITodoDTO {
+    _id: string;
     synced: boolean;
     action: 'create' | 'update' | 'delete';
 }
 
-const addTask = async (task: IDBTask) => {
-    realmDB.write(() => {
-        realmDB.create('Task', task);
-    });
+
+export const useTodoDB = () => {
+    const realm = useRealm();
+
+    const addTask = (task: IDBTask) => {
+        realm.write(() => {
+            realm.create('Task', task);
+        });
+    };
+
+    const getTasks = (): IDBTask[] => {
+        return realm.objects('Task').map((task: any) => ({
+            _id: task._id,
+            id: task.id,
+            userId: task.userId,
+            title: task.title,
+            completed: task.completed,
+            synced: task.synced,
+            action: task.action,
+        }));
+    };
+
+    const updateTask = (task: IDBTask) => {
+        realm.write(() => {
+            realm.create('Task', task, true);
+        });
+    };
+
+    const deleteTask = (id: string) => {
+        realm.write(() => {
+            realm.delete(realm.objectForPrimaryKey('Task', id));
+        });
+    };
+
+    const deleteLocalTask = (task: IDBTask) => {
+        realm.write(() => {
+            realm.delete(realm.objectForPrimaryKey('Task', task._id));
+        });
+    };
+
+    const deleteAllTasks = () => {
+        realm.write(() => {
+            realm.deleteAll();
+        });
+    };
+
+    return { addTask, getTasks, updateTask, deleteTask, deleteLocalTask, deleteAllTasks };
 };
 
-const getTasks = (): IDBTask[] => {
-    return realmDB.objects('Task').map((task: any) => ({
-        id: task.id,
-        name: task.name,
-        description: task.description,
-        done: task.done,
-        synced: task.synced,
-        action: task.action,
-    }));
-};
-
-const updateTask = async (task: IDBTask) => {
-    realmDB.write(() => {
-        const taskDB = realmDB.objectForPrimaryKey('Task', task.id);
-        if (taskDB) {
-            Object.keys(task).forEach((key: any) => {
-                taskDB[key] = (task as any)[key];
-            });
-        }
-    });
-};
-
-const deleteTask = (id: string) => {
-    realmDB.write(() => {
-        const task = realmDB.objectForPrimaryKey('Task', id);
-        realmDB.delete(task);
-    });
-};
-
-export const dbTodo = {
-    addTask,
-    getTasks,
-    updateTask,
-    deleteTask,
-};

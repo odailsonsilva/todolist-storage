@@ -1,6 +1,6 @@
 export interface ITodoDTO {
-    id: string;
-    name: string;
-    description: string;
-    done: boolean;
+    userId: number;
+    id?: number;
+    title: string;
+    completed: boolean;
 }

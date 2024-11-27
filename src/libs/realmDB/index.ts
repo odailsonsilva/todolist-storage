@@ -1,14 +1,10 @@
-import Realm from 'realm';
+import { createRealmContext } from '@realm/react';
 
-const TaskSchema = {
-    name: 'Task',
-    primaryKey: 'id',
-    properties: {
-        id: 'string',
-        name: 'string',
-        description: 'string',
-        done: 'bool',
-    },
+import { TaskSchema } from './Schemas/Task';
+
+const config = {
+    schema: [TaskSchema],
+    schemaVersion: 6,
 };
 
-export const realmDB = new Realm({ schema: [TaskSchema] });
+export const { RealmProvider, useObject, useQuery, useRealm } = createRealmContext(config);

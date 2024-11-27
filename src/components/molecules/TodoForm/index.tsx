@@ -19,17 +19,16 @@ export const TodoForm = React.memo(({ todo, isOpen, onClose }: TodoFormProps) =>
     const { control, handleSubmit, formState, reset, setValue } = useForm<FormTodoSchema>({
         resolver: zodResolver(formTodoSchema),
         defaultValues: useMemo(() => ({
-            name: '',
-            description: '',
+            title: '',
         }), []),
     });
     const { addTask, editTask, deleteTask } = useOfflineContext();
 
     const onSave = useCallback((data: FormTodoSchema) => {
         if (todo) {
-            editTask({ ...todo, ...data });
+            editTask({ ...todo, title: data.title });
         } else {
-            addTask({ ...data, id: new Date().getTime().toString(), done: false });
+            addTask({ ...data, completed: false, userId: 1, title: data.title });
         }
 
         onClose();
@@ -37,8 +36,7 @@ export const TodoForm = React.memo(({ todo, isOpen, onClose }: TodoFormProps) =>
 
     const setInitialValues = useCallback(() => {
         if (todo) {
-            setValue('name', todo.name);
-            setValue('description', todo.description);
+            setValue('title', todo.title);
         }
     }, [todo, setValue]);
 
@@ -61,21 +59,18 @@ export const TodoForm = React.memo(({ todo, isOpen, onClose }: TodoFormProps) =>
                 <FormTextInput
                     label="Title"
                     control={control}
-                    name="name"
+                    name="title"
                 />
 
-                <FormTextInput
-                    label="Description"
-                    control={control}
-                    name="description"
-                />
 
                 <Box gap="s4">
-                    <Button
-                        title="Delete"
-                        preset="primaryOutline"
-                        onPress={() => deleteTask(todo?.id || '')}
-                    />
+                    {todo && (
+                        <Button
+                            title="Delete"
+                            onPress={() => deleteTask(todo)}
+                            preset="primaryOutline"
+                        />
+                    )}
 
                     <Button
                         title="Save"
