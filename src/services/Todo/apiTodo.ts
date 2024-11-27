@@ -4,8 +4,7 @@ import { ENDPOINTS } from '@/utils/endpoints';
 
 const getTodos = async (): Promise<ITodoDTO[]> => {
     const response = await api.get(ENDPOINTS.TODOS);
-    const data = response.data as ITodoDTO[];
-    return data?.filter(todo => todo.userId === 1);
+    return response.data?.filter((todo: ITodoDTO) => todo.userId === 1);
 };
 
 const createTodo = async (todo: ITodoDTO) => {
@@ -18,7 +17,7 @@ const updateTodo = async (todo: ITodoDTO) => {
     return response;
 };
 
-const deleteTodo = async (id: string) => {
+const deleteTodo = async (id: number) => {
     const response = await api.delete(`${ENDPOINTS.TODOS}/${id}`);
     return response;
 };

@@ -9,10 +9,15 @@ import { useOfflineContext } from '@/contexts/Offiline/OfflineContext';
 import { IDBTask } from '@/services/Todo/dbTodo';
 import { palette } from '@/theme';
 
-const Item = memo(({ item }: { item: IDBTask, index: number }) => {
+const Item = ({ item }: { item: IDBTask, index: number }) => {
     const [isChecked] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { editTask } = useOfflineContext();
+
+    const onCompleteTask = () => {
+        editTask({ ...item, completed: true });
+        setIsModalOpen(false);
+    };
 
     return (
         <Card mr="s4" >
@@ -29,7 +34,7 @@ const Item = memo(({ item }: { item: IDBTask, index: number }) => {
                     )}
                 </Box>
 
-                <Checkbox value={String(item.id)} selectedValue={String(isChecked ? item.id : undefined)} onPress={() => editTask({ ...item, completed: true })} />
+                <Checkbox value={String(item.id)} selectedValue={String(isChecked ? item.id : undefined)} onPress={onCompleteTask} />
             </TouchableOpacityBox>
 
             <TodoForm
@@ -39,7 +44,7 @@ const Item = memo(({ item }: { item: IDBTask, index: number }) => {
             />
         </Card>
     );
-});
+};
 
 export const NewTodos = () => {
     const { tasks } = useOfflineContext();

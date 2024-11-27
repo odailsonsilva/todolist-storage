@@ -26,7 +26,7 @@ export const useTodoDB = () => {
             completed: task.completed,
             synced: task.synced,
             action: task.action,
-        }));
+        })).sort((a, b) => a.synced ? 1 : b.synced ? -1 : 0);
     };
 
     const updateTask = (task: IDBTask) => {

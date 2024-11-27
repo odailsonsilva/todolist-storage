@@ -4,7 +4,7 @@ import { TaskSchema } from './Schemas/Task';
 
 const config = {
     schema: [TaskSchema],
-    schemaVersion: 6,
+    schemaVersion: 11,
 };
 
 export const { RealmProvider, useObject, useQuery, useRealm } = createRealmContext(config);

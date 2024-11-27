@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 import NetInfo from '@react-native-community/netinfo';
 
+import { useToast } from '../Toast/ToastContext';
+
 import { OfflineContext } from './OfflineContext';
 
 import { useConfirmation } from '@/hooks/useConfirmation';
@@ -12,6 +14,8 @@ import { useTodoDB, IDBTask } from '@/services/Todo/dbTodo';
 
 export const OfflineProvider = ({ children }: { children: React.ReactNode }) => {
     const [tasks, setTasks] = useState<IDBTask[]>([]);
+
+    const { showToast } = useToast();
     const [isOffline, setIsOffline] = useState(false);
     const { updateModalStateAndOpenModal, renderModal } = useConfirmation({
         title: 'Sync Data',
@@ -23,23 +27,35 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
     const dbTodo = useTodoDB();
 
     const addTask = (task: ITodoDTO) => {
-        const newTask: IDBTask = { ...task, synced: false, action: 'create', _id: Date.now().toString() || '' };
-        dbTodo.addTask(newTask);
-        setTasks([...dbTodo.getTasks()]);
+        try {
+            const newTask: IDBTask = { ...task, synced: false, action: 'create', _id: Date.now().toString() || '' };
+            dbTodo.addTask(newTask);
+            setTasks([...dbTodo.getTasks()]);
+            showToast({ message: 'Task added successfully', type: 'success', title: 'Success' });
+        } catch (error) {
+            showToast({ message: 'Error to add task', type: 'error', title: 'Error' });
+        }
     };
 
     const editTask = (updatedFields: IDBTask) => {
-        dbTodo.updateTask({ ...updatedFields, action: 'update', synced: false });
-        setTasks([...dbTodo.getTasks()]);
+        try {
+            dbTodo.updateTask({ ...updatedFields, action: 'update', synced: false });
+            setTasks([...dbTodo.getTasks()]);
+            showToast({ message: 'Task updated successfully', type: 'success', title: 'Success' });
+        } catch (error) {
+            showToast({ message: 'Error to update task', type: 'error', title: 'Error' });
+        }
     };
 
     const deleteTask = (updatedFields: IDBTask) => {
         if (updatedFields?.id) {
             dbTodo.updateTask({ ...updatedFields, action: 'delete', synced: false });
             setTasks([...dbTodo.getTasks()]);
+            showToast({ message: 'Task deleted successfully', type: 'success', title: 'Success' });
         } else {
             dbTodo.deleteLocalTask(updatedFields);
             setTasks([...dbTodo.getTasks()]);
+            showToast({ message: 'Task deleted successfully', type: 'success', title: 'Success' });
         }
     };
 
@@ -52,22 +68,22 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
             const serverTasks: ITodoDTO[] = await apiTodo.getTodos();
             const formattedTasks = serverTasks.map(serverTask => ({
                 synced: true,
-                _id: serverTask.id?.toString() || '',
+                _id: serverTask.id!.toString(),
                 action: 'create' as any,
-                userId: 1,
+                userId: serverTask.userId,
                 title: serverTask.title,
                 completed: serverTask.completed,
-                id: Number(serverTask.id),
+                id: serverTask.id,
             }));
-
             const localTasks = dbTodo.getTasks();
             const mergedTasks: IDBTask[] = [...localTasks];
 
             const serverTasksNotInLocal = formattedTasks.filter((serverData) => !localTasks.some((localData) => localData._id === serverData._id));
             mergedTasks.push(...serverTasksNotInLocal);
-            serverTasksNotInLocal.forEach((task) => dbTodo.addTask(task));
 
+            serverTasksNotInLocal.forEach((task) => dbTodo.addTask(task));
             setTasks(mergedTasks);
+
         } catch (error) {
             console.error('Error fetching and storing tasks', error);
         }
@@ -86,15 +102,16 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
             } else if (task.action === 'update') {
                 await apiTodo.updateTodo({ ...todo, id: task.id });
             } else if (task.action === 'delete') {
-                await apiTodo.deleteTodo(task?.id?.toString() || '');
+                await apiTodo.deleteTodo(task.id!);
             }
 
             await fetchAndStoreTasks();
 
             dbTodo.updateTask({ ...task, synced: true });
             dbTodo.deleteLocalTask(task);
+            showToast({ message: 'Task synced successfully', type: 'success', title: 'Success' });
         } catch (error) {
-            console.error('error to sync task', error);
+            showToast({ message: !isOffline ? 'Error to sync task' : 'Error to sync task, please check your internet connection', type: 'error', title: 'Error' });
         } finally {
             setTasks([...dbTodo.getTasks()]);
         }
@@ -104,35 +121,34 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
         try {
             const unsyncedTasks = dbTodo.getTasks().filter((task: IDBTask) => !task.synced);
             for (let task of unsyncedTasks) {
-                try {
-                    const todo: ITodoDTO = {
-                        userId: 1,
-                        title: task.title,
-                        completed: task.completed,
-                    };
+                const todo: ITodoDTO = {
+                    userId: 1,
+                    title: task.title,
+                    completed: task.completed,
+                };
 
-                    if (task.action === 'create') {
-                        await apiTodo.createTodo(todo);
-                    } else if (task.action === 'update') {
-                        await apiTodo.updateTodo({ ...todo, id: task.id });
-                    } else if (task.action === 'delete') {
-                        await apiTodo.deleteTodo(task?.id?.toString() || '');
-                    }
-                    dbTodo.updateTask({ ...task, synced: true });
-                } catch (error) {
-                    console.error('asdas');
+                if (task.action === 'create') {
+                    await apiTodo.createTodo(todo);
+                } else if (task.action === 'update') {
+                    await apiTodo.updateTodo({ ...todo, id: task.id });
+                } else if (task.action === 'delete') {
+                    await apiTodo.deleteTodo(task.id!);
                 }
-
-                await fetchAndStoreTasks();
+                dbTodo.updateTask({ ...task, synced: true });
             }
+
+            dbTodo.deleteAllTasks();
+            await fetchAndStoreTasks();
             setTasks([...dbTodo.getTasks()]);
+            showToast({ message: 'Tasks synced successfully', type: 'success', title: 'Success' });
         } catch (error) {
-            console.error('error to sync task', error);
+            showToast({ message: !isOffline ? 'Error to sync task' : 'Error to sync task, please check your internet connection', type: 'error', title: 'Error' });
         }
     };
 
     useEffect(() => {
         fetchAndStoreTasks();
+        dbTodo.deleteAllTasks();
 
         const unsubscribe = NetInfo.addEventListener((state) => {
             setIsOffline(!state.isConnected);
