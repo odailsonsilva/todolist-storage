@@ -23,7 +23,7 @@ export const TodoForm = React.memo(({ todo, isOpen, onClose }: TodoFormProps) =>
             description: '',
         }), []),
     });
-    const { addTask, editTask } = useOfflineContext();
+    const { addTask, editTask, deleteTask } = useOfflineContext();
 
     const onSave = useCallback((data: FormTodoSchema) => {
         if (todo) {
@@ -70,12 +70,20 @@ export const TodoForm = React.memo(({ todo, isOpen, onClose }: TodoFormProps) =>
                     name="description"
                 />
 
-                <Button
-                    title="Save"
-                    onPress={handleSubmit(onSave)}
-                    disabled={!formState.isValid}
-                    loading={formState.isSubmitting}
-                />
+                <Box gap="s4">
+                    <Button
+                        title="Delete"
+                        preset="primaryOutline"
+                        onPress={() => deleteTask(todo?.id || '')}
+                    />
+
+                    <Button
+                        title="Save"
+                        onPress={handleSubmit(onSave)}
+                        disabled={!formState.isValid}
+                        loading={formState.isSubmitting}
+                    />
+                </Box>
             </Box>
         </Modal>
     );
