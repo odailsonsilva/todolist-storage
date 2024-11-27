@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
 import { Box, Card, Text, TouchableOpacityBox } from '@/components';
 import { Checkbox } from '@/components/atoms/Checkbox/Checkbox';
 import { TodoForm } from '@/components/molecules/TodoForm';
+import { useOfflineContext } from '@/contexts/Offiline/OfflineContext';
 import { palette } from '@/theme';
 
-const Item = ({ item }: { item: any, index: number }) => {
+const Item = memo(({ item }: { item: any, index: number }) => {
     const [isChecked, setIsChecked] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -21,7 +22,6 @@ const Item = ({ item }: { item: any, index: number }) => {
                 <Checkbox value={String(item.id)} selectedValue={String(isChecked ? item.id : undefined)} onPress={() => setIsChecked(!isChecked)} />
             </TouchableOpacityBox>
 
-
             <TodoForm
                 todo={item}
                 isOpen={isModalOpen}
@@ -29,24 +29,22 @@ const Item = ({ item }: { item: any, index: number }) => {
             />
         </Card>
     );
-};
+});
 
 export const NewTodos = () => {
-    const mockData = [
-        { id: '1', name: 'Item 1' },
-        { id: '2', name: 'Item 2' },
-        { id: '3', name: 'Item 3' },
-    ];
-
+    const { tasks } = useOfflineContext();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <>
             <FlatList
-                data={mockData}
+                data={tasks}
                 renderItem={({ item, index }) => <Item item={item} index={index} />}
                 keyExtractor={(item, index) => `${item.id}-${index}`}
                 contentContainerStyle={{ paddingBottom: 20 }}
+                ListEmptyComponent={
+                    <Text style={styles.emptyMessage}>No tasks available</Text>
+                }
             />
 
             <TouchableOpacityBox style={styles.floatingButton} onPress={() => setIsModalOpen(true)}>
@@ -93,5 +91,11 @@ const styles = StyleSheet.create({
     actionText: {
         fontSize: 18,
         marginVertical: 10,
+    },
+    emptyMessage: {
+        textAlign: 'center',
+        marginTop: 20,
+        fontSize: 16,
+        color: '#888',
     },
 });
