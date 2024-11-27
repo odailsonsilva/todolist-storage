@@ -1,9 +1,12 @@
-import { ThemeColors } from '@/theme';
-import { Box, TouchableOpacityBox, TouchableOpacityBoxProps } from '../Box/Box';
-import { Text } from '../Text';
 import { Dimensions } from 'react-native';
 
-type ChipPresets = 'default' | 'blue'
+import { Box, TouchableOpacityBox, TouchableOpacityBoxProps } from '../Box/Box';
+import { Text } from '../Text';
+
+import { ThemeColors } from '@/theme';
+
+
+type ChipPresets = 'default' | 'create' | 'update' | 'delete'
 
 const { width } = Dimensions.get('window');
 
@@ -16,13 +19,13 @@ export function Chip({ preset = 'default', ...touchableOpacityBoxProps }: ChipPa
 
     return (
         <TouchableOpacityBox
-            backgroundColor="primary500-10%"
+            backgroundColor={chipPreset.backgroundColor}
             borderRadius="s16"
-            minHeight={24}
+            height={24}
             paddingHorizontal="s16"
             alignItems="center"
             flexDirection="row"
-            maxWidth={width * 0.59}
+            maxWidth={width * 0.5}
             {...touchableOpacityBoxProps}
         >
             <Box
@@ -30,7 +33,7 @@ export function Chip({ preset = 'default', ...touchableOpacityBoxProps }: ChipPa
                 width={8}
                 borderRadius="s12"
                 mr="s16"
-                backgroundColor={chipPreset}
+                backgroundColor={chipPreset.badgeColor}
             />
             <Text
                 preset="chip"
@@ -43,7 +46,21 @@ export function Chip({ preset = 'default', ...touchableOpacityBoxProps }: ChipPa
     );
 }
 
-const chipPresets: Record<ChipPresets, ThemeColors> = {
-    default: 'white100',
-    blue: 'primary400',
+const chipPresets: Record<ChipPresets, { backgroundColor: ThemeColors, badgeColor: ThemeColors }> = {
+    default: {
+        backgroundColor: 'white100',
+        badgeColor: 'neutral700',
+    },
+    create: {
+        backgroundColor: 'blue500',
+        badgeColor: 'blue700',
+    },
+    update: {
+        backgroundColor: 'yellow500',
+        badgeColor: 'yellow700',
+    },
+    delete: {
+        backgroundColor: 'error500',
+        badgeColor: 'error700',
+    },
 };

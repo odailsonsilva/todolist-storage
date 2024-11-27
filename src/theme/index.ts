@@ -23,11 +23,16 @@ export const palette = {
     gray200: '#E0E4EA',
 
     error500: '#DC362E',
+    error700: '#B32D25',
 
     white100: '#FFFFFF',
     white200: '#F5F7FB',
 
+    blue500: '#007AFF',
+    blue700: '#0056B3',
+
     yellow500: '#E4BA21',
+    yellow700: '#C59A1A',
 
     background: '#F5F7FB',
     background100: '#C5E1E9',

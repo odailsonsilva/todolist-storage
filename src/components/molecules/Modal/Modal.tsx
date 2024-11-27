@@ -1,12 +1,15 @@
 import { useEffect, useRef } from 'react';
-import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
-
-import { Button } from '../../atoms/Button/Button';
-import { Box } from '../../atoms/Box/Box';
-import { Text } from '../../atoms/Text';
-import { ScrollView } from 'react-native-gesture-handler';
-import { useAppSafeArea } from '../../../hooks/useAppSafeArea';
 import { Dimensions } from 'react-native';
+
+import ActionSheet, { ActionSheetRef } from 'react-native-actions-sheet';
+import { ScrollView } from 'react-native-gesture-handler';
+
+import { useAppSafeArea } from '../../../hooks/useAppSafeArea';
+import { Box } from '../../atoms/Box/Box';
+import { Button } from '../../atoms/Button/Button';
+import { Text } from '../../atoms/Text';
+
+
 
 const { height } = Dimensions.get('window');
 
@@ -97,7 +100,7 @@ export function Modal({
                         {description && <Text preset="bodyMd" color="neutral700" mt="s4">{description}</Text>}
                     </Box>
                 )}
-                <ScrollView style={[{ paddingHorizontal: 20 }, maxHeight ? { maxHeight: height * maxHeight } : {}]}>
+                <ScrollView style={[{ paddingHorizontal: 20 }]}>
                     {children}
                 </ScrollView>
                 {visabledButtons &&
