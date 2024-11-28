@@ -1,79 +1,174 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# **My Todo App**
+A React Native project to manage todos with offline-first functionality, error handling, and synchronization when online.
 
-# Getting Started
+![Project Overview](<gif_path>) <!-- Replace with an overview GIF -->
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+---
 
-## Step 1: Start the Metro Server
+## **Table of Contents**
+1. [Features](#features)
+2. [Requirements](#requirements)
+3. [Setup Instructions](#setup-instructions)
+4. [Running the Project](#running-the-project)
+5. [API Information](#api-information)
+6. [Features in Action](#features-in-action)
+7. [Future Improvements](#future-improvements)
+8. [Technologies Used](#technologies-used)
+9. [Author](#author)
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+---
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## **Features**
+- Login with error handling
+- Create, edit, delete, and mark todos as done
+- Logout functionality
+- Offline-first architecture with error synchronization when online
 
-```bash
-# using npm
-npm start
+---
 
-# OR using Yarn
-yarn start
-```
+## **Requirements**
+- **Node.js**: Version 20+
+- **NPM**: Version 6+ or **Yarn**: Version 1.22+
+- **React Native CLI**
+- **Android Studio** or **Xcode** (for Android and iOS development)
 
-## Step 2: Start your Application
+---
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+## **Setup Instructions**
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/your-repo-name.git
+   cd your-repo-name
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run the project:
+
+   **For Android:**
+   ```bash
+   npx react-native run-android
+   ```
+
+   **For iOS:**
+   ```bash
+   npx pod-install
+   npx react-native run-ios
+   ```
+
+4. Start the Metro bundler:
+   ```bash
+   npm start
+   ```
+
+---
+
+## **Running the Project**
 
 ### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
+1. Ensure you have Android Studio installed.
+2. Open the Android Virtual Device (AVD) Manager and start an emulator.
+3. Run:
+   ```bash
+   npx react-native run-android
+   ```
 
 ### For iOS
+1. Ensure you have Xcode installed.
+2. Install pods:
+   ```bash
+   npx pod-install
+   ```
+3. Run:
+   ```bash
+   npx react-native run-ios
+   ```
 
-```bash
-# using npm
-npm run ios
+---
 
-# OR using Yarn
-yarn ios
+## **API Information**
+This project uses a MockAPI online service with the following base URL:
+```
+https://67479afd38c8741641d72cdf.mockapi.io/api
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+### Endpoints
+- **Todos Endpoint:**
+  ```
+  https://67479afd38c8741641d72cdf.mockapi.io/api/todos
+  ```
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+- **Users Endpoint:**
+  ```
+  https://67479afd38c8741641d72cdf.mockapi.io/api/users
+  ```
 
-## Step 3: Modifying your App
+### Test Users for Login
+- **User 1:**
+  - Login: kitch@teste.com
+  - Password: teste123
 
-Now that you have successfully run the app, let's modify it.
+- **User 2:**
+  - Login: kitch2@teste.com
+  - Password: teste123
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+---
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## **Features in Action**
 
-## Congratulations! :tada:
+1. **Login and Error Handling**
+   - Users can log in, and appropriate error messages are displayed for invalid inputs.
+    ![Login](./assets/login.gif)
 
-You've successfully run and modified your React Native App. :partying_face:
 
-### Now what?
+2. **Create a Todo**
+   - Allows users to create a new todo.
+    ![Create](./assets/create.gif)
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+3. **Edit a Todo**
+   - Edit the title or mark a todo as incomplete.
+    ![Edit](./assets/edit.gif)
 
-# Troubleshooting
+4. **Delete a Todo**
+   - Delete an existing todo from the list.
+    ![Delete](./assets/delete.gif)
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+5. **Mark as Done**
+   - Mark a todo as completed.
+     ![Done](./assets/done.gif)
 
-# Learn More
+6. **Logout**
+   - Log out of the app.
+    ![Logout](./assets/logout.gif)
 
-To learn more about React Native, take a look at the following resources:
+7. **Offline Functionality**
+   - Users can manage todos while offline. When the internet reconnects, the app synchronizes data and shows an action sheet.
+     ![Offline](./assets/offline.gif)
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+---
+
+## **Future Improvements**
+- Add unit and integration tests using Jest and Testing Library.
+- Enhance todos with additional fields:
+  - **Date Picker**: Allow users to select a due date.
+  - **Category Selector**: Provide categories for better organization.
+  - **Priority Levels**: Add prioritization to todos.
+- Implement filters for todos, such as completed, pending, or by category.
+
+---
+
+## **Technologies Used**
+- React Native
+- @react-native-async-storage/async-storage
+- Axios
+- RealmDB
+- React Navigation
+- React Native Action Sheet
+
+---
+
+## **Author**
+<!-- Add author information here -->
