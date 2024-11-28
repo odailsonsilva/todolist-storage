@@ -151,7 +151,6 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
 
     useEffect(() => {
         fetchAndStoreTasks();
-        dbTodo.deleteAllTasks();
 
         const unsubscribe = NetInfo.addEventListener((state) => {
             setIsOffline(!state.isConnected);

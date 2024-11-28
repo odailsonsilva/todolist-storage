@@ -12,7 +12,7 @@ import { useUserDB } from '@/services/User/dbUser';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<IUserDTO | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const { updateModalStateAndOpenModal, renderModal } = useConfirmation({});
@@ -60,7 +60,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setUser(userDb);
             setIsAuthenticated(true);
         }
-        setIsLoading(false);
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
     };
 
     useEffect(() => {

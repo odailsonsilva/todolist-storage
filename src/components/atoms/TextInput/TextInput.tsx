@@ -8,11 +8,11 @@ import {
 } from 'react-native';
 
 import { useAppTheme } from '../../../hooks/useAppTheme';
-
 import { Box, BoxProps } from '../Box/Box';
-import { textFieldPresets } from './textInputPresets';
 import { Icon, IconNames } from '../Icon/Icon';
 import { Text } from '../Text';
+
+import { textFieldPresets } from './textInputPresets';
 
 export interface TextInputProps extends RNTextInputProps {
     label: string;

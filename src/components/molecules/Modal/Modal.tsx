@@ -100,7 +100,7 @@ export function Modal({
                         {description && <Text preset="bodyMd" color="neutral700" mt="s4">{description}</Text>}
                     </Box>
                 )}
-                <ScrollView style={[{ paddingHorizontal: 20 }]}>
+                <ScrollView style={[{ paddingHorizontal: 20 }, maxHeight ? { maxHeight: height * maxHeight } : {}]}>
                     {children}
                 </ScrollView>
                 {visabledButtons &&

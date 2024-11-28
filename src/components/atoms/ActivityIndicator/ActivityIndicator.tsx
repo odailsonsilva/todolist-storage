@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 
 import { useAppTheme } from '../../../hooks/useAppTheme';
+
 import { ThemeColors } from '@/theme';
 
 interface Props extends Omit<ActivityIndicatorProps, 'color'> {

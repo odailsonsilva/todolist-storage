@@ -1,7 +1,8 @@
-import { TextInput, TextInputProps } from '../../atoms/TextInput/TextInput';
 import React from 'react';
 
-import {Controller, UseControllerProps, FieldValues} from 'react-hook-form';
+import { Controller, UseControllerProps, FieldValues } from 'react-hook-form';
+
+import { TextInput, TextInputProps } from '../../atoms/TextInput/TextInput';
 
 
 export function FormTextInput<FormType extends FieldValues>({
@@ -15,11 +16,11 @@ export function FormTextInput<FormType extends FieldValues>({
       control={control}
       name={name}
       rules={rules}
-      render={({field, fieldState}) => (
+      render={({ field, fieldState }) => (
         <TextInput
           value={field.value}
           onChangeText={(e: any) => {
-            field.onChange(e)
+            field.onChange(e);
           }}
           errorMessage={fieldState.error?.message}
           {...textInputProps}

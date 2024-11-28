@@ -55,7 +55,7 @@ export const TodoForm = React.memo(({ todo, isOpen, onClose }: TodoFormProps) =>
             title={todo ? 'Edit Todo' : 'New Todo'}
             visibleHeader
         >
-            <Box gap="s16" flex={1}>
+            <Box gap="s16" flex={1} paddingVertical="s10">
                 <FormTextInput
                     label="Title"
                     control={control}
