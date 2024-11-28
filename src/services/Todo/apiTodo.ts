@@ -4,6 +4,7 @@ import { ENDPOINTS } from '@/utils/endpoints';
 
 const getTodos = async (userId: number | string): Promise<ITodoDTO[]> => {
     const response = await api.get(ENDPOINTS.TODOS);
+    console.log('response', response.data);
     return response.data?.filter((todo: ITodoDTO) => String(todo.userId) === String(userId));
 };
 

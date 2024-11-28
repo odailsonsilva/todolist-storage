@@ -11,7 +11,6 @@ import { useConfirmation } from '@/hooks/useConfirmation';
 import { ITodoDTO } from '@/models';
 import { apiTodo } from '@/services/Todo/apiTodo';
 import { useTodoDB, IDBTask } from '@/services/Todo/dbTodo';
-import { useUserDB } from '@/services/User/dbUser';
 
 
 export const OfflineProvider = ({ children }: { children: React.ReactNode }) => {
@@ -149,9 +148,13 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
         }
     };
 
-    useEffect(() => {
-        fetchAndStoreTasks();
 
+    useEffect(() => {
+        setTasks([]);
+        fetchAndStoreTasks();
+    }, [user]);
+
+    useEffect(() => {
         const unsubscribe = NetInfo.addEventListener((state) => {
             setIsOffline(!state.isConnected);
             if (state.isConnected) {
@@ -167,6 +170,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
 
         return () => unsubscribe();
     }, []);
+
 
     return (
         <OfflineContext.Provider
