@@ -20,15 +20,16 @@ export const TodoForm = React.memo(({ todo, isOpen, onClose }: TodoFormProps) =>
         resolver: zodResolver(formTodoSchema),
         defaultValues: useMemo(() => ({
             title: '',
+            description: '',
         }), []),
     });
     const { addTask, editTask, deleteTask } = useOfflineContext();
 
     const onSave = useCallback((data: FormTodoSchema) => {
         if (todo) {
-            editTask({ ...todo, title: data.title });
+            editTask({ ...todo, title: data.title, description: data.description });
         } else {
-            addTask({ ...data, completed: false, userId: 1, title: data.title });
+            addTask({ ...data, completed: false, userId: 1, title: data.title, description: data.description });
         }
 
         onClose();
@@ -37,6 +38,7 @@ export const TodoForm = React.memo(({ todo, isOpen, onClose }: TodoFormProps) =>
     const setInitialValues = useCallback(() => {
         if (todo) {
             setValue('title', todo.title);
+            setValue('description', todo.description);
         }
     }, [todo, setValue]);
 

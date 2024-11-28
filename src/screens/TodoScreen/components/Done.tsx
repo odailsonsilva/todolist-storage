@@ -12,6 +12,7 @@ const Item = ({ item }: { item: IDBTask, index: number }) => {
         <Card mr="s4" >
             <Box justifyContent="space-between">
                 <Text preset="titleLg">{item.title}</Text>
+                <Text preset="bodySm" color="neutral700" mt="s4">{item.description}</Text>
                 {!item.synced && (
                     <Chip
                         preset="update"

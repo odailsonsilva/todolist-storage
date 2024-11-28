@@ -1,4 +1,4 @@
-import React, { useState, memo, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
 import { Box, Card, Chip, Text, TouchableOpacityBox } from '@/components';
@@ -24,6 +24,7 @@ const Item = ({ item }: { item: IDBTask, index: number }) => {
             <TouchableOpacityBox onPress={() => setIsModalOpen(true)} flexDirection="row" justifyContent="space-between">
                 <Box justifyContent="space-between">
                     <Text preset="titleLg" ml="s4">{item.title}</Text>
+                    <Text preset="bodySm" color="neutral700" mt="s4">{item.description}</Text>
                     {!item.synced && (
                         <Chip
                             preset="update"

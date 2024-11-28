@@ -7,7 +7,10 @@ import { useToast } from '../Toast/ToastContext';
 
 import { OfflineContext } from './OfflineContext';
 
-import { useConfirmation } from '@/hooks/useConfirmation';
+import { Text } from '@/components';
+import { Box } from '@/components/atoms/Box/Box';
+import { Button } from '@/components/atoms/Button/Button';
+import { Modal } from '@/components/molecules/Modal/Modal';
 import { ITodoDTO } from '@/models';
 import { apiTodo } from '@/services/Todo/apiTodo';
 import { useTodoDB, IDBTask } from '@/services/Todo/dbTodo';
@@ -18,20 +21,17 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
 
     const { showToast } = useToast();
     const [isOffline, setIsOffline] = useState(false);
-    const { updateModalStateAndOpenModal, renderModal } = useConfirmation({
-        title: 'Sync Data',
-        description: 'You reconect to internet and have unsynced data, do you want to sync now?',
-        confirm: 'Sync',
-        cancel: 'Cancel',
-    });
+    const [open, setOpen] = useState(false);
 
     const dbTodo = useTodoDB();
     const { user } = useAuthContext();
 
+    console.log({ user });
+
 
     const addTask = (task: ITodoDTO) => {
         try {
-            const newTask: IDBTask = { ...task, synced: false, action: 'create', _id: Date.now().toString() || '' };
+            const newTask: IDBTask = { ...task, synced: false, action: 'create', _id: Date.now().toString() || '', userId: Number(user?.id!) };
             dbTodo.addTask(newTask);
             setTasks([...dbTodo.getTasks()]);
             showToast({ message: 'Task added successfully', type: 'success', title: 'Success' });
@@ -42,7 +42,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
 
     const editTask = (updatedFields: IDBTask) => {
         try {
-            dbTodo.updateTask({ ...updatedFields, action: 'update', synced: false });
+            dbTodo.updateTask({ ...updatedFields, action: updatedFields.id ? 'update' : 'create', synced: false, userId: Number(user?.id!) });
             setTasks([...dbTodo.getTasks()]);
             showToast({ message: 'Task updated successfully', type: 'success', title: 'Success' });
         } catch (error) {
@@ -52,7 +52,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
 
     const deleteTask = (updatedFields: IDBTask) => {
         if (updatedFields?.id) {
-            dbTodo.updateTask({ ...updatedFields, action: 'delete', synced: false });
+            dbTodo.updateTask({ ...updatedFields, action: 'delete', synced: false, userId: Number(user?.id!) });
             setTasks([...dbTodo.getTasks()]);
             showToast({ message: 'Task deleted successfully', type: 'success', title: 'Success' });
         } else {
@@ -101,7 +101,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
                 completed: task.completed,
                 description: task.description,
             };
-
+            console.log({ todo });
             if (task.action === 'create') {
                 await apiTodo.createTodo(todo);
             } else if (task.action === 'update') {
@@ -110,10 +110,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
                 await apiTodo.deleteTodo(task.id!);
             }
 
-            await fetchAndStoreTasks();
-
             dbTodo.updateTask({ ...task, synced: true });
-            dbTodo.deleteLocalTask(task);
             showToast({ message: 'Task synced successfully', type: 'success', title: 'Success' });
         } catch (error) {
             showToast({ message: !isOffline ? 'Error to sync task' : 'Error to sync task, please check your internet connection', type: 'error', title: 'Error' });
@@ -132,7 +129,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
                     completed: task.completed,
                     description: task.description,
                 };
-
+                console.log({ todo });
                 if (task.action === 'create') {
                     await apiTodo.createTodo(todo);
                 } else if (task.action === 'update') {
@@ -143,6 +140,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
                 dbTodo.updateTask({ ...task, synced: true });
             }
 
+            setOpen(false);
             dbTodo.deleteAllTasks();
             await fetchAndStoreTasks();
             setTasks([...dbTodo.getTasks()]);
@@ -162,19 +160,16 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
         const unsubscribe = NetInfo.addEventListener((state) => {
             setIsOffline(!state.isConnected);
             if (state.isConnected) {
-                fetchAndStoreTasks();
                 const unsyncedTasks = dbTodo.getTasks().filter((task: IDBTask) => !task.synced);
                 const hasUnsyncedTasks = unsyncedTasks.length > 0;
                 if (hasUnsyncedTasks) {
-                    updateModalStateAndOpenModal({
-                        onConfirm: () => syncWithServer(),
-                    });
+                    setOpen(true);
                 }
             }
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [user]);
 
 
     return (
@@ -191,7 +186,36 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
             }}
         >
             {children}
-            {renderModal()}
+            <Modal
+                isOpen={open}
+                onClose={() => setOpen(false)}
+            >
+                <Box>
+                    <Text preset="titleLg" pt="s20">Sync Data</Text>
+                    <Text preset="bodyMd" color="neutral700" mt="s16">You reconect to internet and have unsynced data, do you want to sync now?</Text>
+
+                    <Box flexDirection="row" alignItems="center" mt="s24" mr="s20">
+                        <Button
+                            title="Cancel"
+                            preset="primaryOutline"
+                            width="50%"
+                            fullWidth={false}
+                            onPress={() => {
+                                setOpen(false);
+                            }}
+                        />
+                        <Button
+                            title="Sync"
+                            fullWidth={false}
+                            width="50%"
+                            ml="s8"
+                            onPress={() => {
+                                syncWithServer();
+                            }}
+                        />
+                    </Box>
+                </Box>
+            </Modal>
         </OfflineContext.Provider>
     );
 };

@@ -31,6 +31,7 @@ const Item = ({ item }: { item: IDBTask, index: number, }) => {
             <TouchableOpacityBox flexDirection="row" justifyContent="space-between" alignItems="center" onPress={handlePressItem}>
                 <Box flex={1}>
                     <Text preset="titleLg">{item.title}</Text>
+                    <Text preset="bodySm" color="neutral700" mt="s4">{item.description}</Text>
                     <Text>({item.completed ? 'Completed' : 'Not Completed'})</Text>
                 </Box>
                 <Chip preset={item.action}>{label}</Chip>

@@ -3,10 +3,11 @@ import {
   StyleSheet,
   Text,
 } from 'react-native';
-import { TextInput as CustomTextInput } from '../TextInput/TextInput';
-import { Box, BoxProps, TouchableOpacityBox } from '../Box/Box';
+
 import { Modal } from '../../molecules/Modal/Modal';
+import { Box, BoxProps, TouchableOpacityBox } from '../Box/Box';
 import { Radio } from '../Radio/Radio';
+import { TextInput as CustomTextInput } from '../TextInput/TextInput';
 
 interface Item {
   label: string;
@@ -164,11 +165,6 @@ const DropDownPicker: React.FC<DropDownPickerProps> = ({
         visabledButtons
         gestureEnabled={false}
         confirm="Selecionar"
-        onConfirmation={() => {
-          if (selectedItemRef) {
-            // console.log('Item selecionado:', selectedItemRef.current);
-          }
-        }}
         cancel="Cancelar"
         maxHeight={0.4}
       >
