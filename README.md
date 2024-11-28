@@ -1,8 +1,6 @@
 # **My Todo App**
 A React Native project to manage todos with offline-first functionality, error handling, and synchronization when online.
 
-![Project Overview](<gif_path>) <!-- Replace with an overview GIF -->
-
 ---
 
 ## **Table of Contents**
@@ -14,7 +12,6 @@ A React Native project to manage todos with offline-first functionality, error h
 6. [Features in Action](#features-in-action)
 7. [Future Improvements](#future-improvements)
 8. [Technologies Used](#technologies-used)
-9. [Author](#author)
 
 ---
 
@@ -121,31 +118,38 @@ https://67479afd38c8741641d72cdf.mockapi.io/api
 
 1. **Login and Error Handling**
    - Users can log in, and appropriate error messages are displayed for invalid inputs.
+   
     ![Login](./assets/login.gif)
 
 
 2. **Create a Todo**
    - Allows users to create a new todo.
+
     ![Create](./assets/create.gif)
 
 3. **Edit a Todo**
    - Edit the title or mark a todo as incomplete.
+
     ![Edit](./assets/edit.gif)
 
 4. **Delete a Todo**
    - Delete an existing todo from the list.
+
     ![Delete](./assets/delete.gif)
 
 5. **Mark as Done**
    - Mark a todo as completed.
+
      ![Done](./assets/done.gif)
 
 6. **Logout**
    - Log out of the app.
+
     ![Logout](./assets/logout.gif)
 
 7. **Offline Functionality**
    - Users can manage todos while offline. When the internet reconnects, the app synchronizes data and shows an action sheet.
+
      ![Offline](./assets/offline.gif)
 
 ---
@@ -168,7 +172,3 @@ https://67479afd38c8741641d72cdf.mockapi.io/api
 - React Navigation
 - React Native Action Sheet
 
----
-
-## **Author**
-<!-- Add author information here -->
