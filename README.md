@@ -161,6 +161,10 @@ https://67479afd38c8741641d72cdf.mockapi.io/api
   - **Category Selector**: Provide categories for better organization.
   - **Priority Levels**: Add prioritization to todos.
 - Implement filters for todos, such as completed, pending, or by category.
+- Add a **splash screen** to improve the app's startup experience.
+- Change the **app name** to align with the project branding.
+- Update the **app icon** to a custom design that represents the app.
+- Integrate **Zustand** or another state management library to better isolate global logic and improve maintainability.
 
 ---
 
