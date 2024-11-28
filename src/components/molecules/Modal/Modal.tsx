@@ -9,8 +9,6 @@ import { Box } from '../../atoms/Box/Box';
 import { Button } from '../../atoms/Button/Button';
 import { Text } from '../../atoms/Text';
 
-
-
 const { height } = Dimensions.get('window');
 
 export interface ModalProps {
@@ -88,19 +86,14 @@ export function Modal({
             gestureEnabled={gestureEnabled}
             onClose={handleOnClose}
         >
-            <Box
-                margin="s16"
-                style={{
-                    marginBottom: bottom + 20,
-                }}
-            >
+            <Box style={{ paddingBottom: bottom + 20, height: maxHeight }}>
                 {visibleHeader && (
                     <Box padding="s20">
                         <Text preset="titleLg">{title}</Text>
                         {description && <Text preset="bodyMd" color="neutral700" mt="s4">{description}</Text>}
                     </Box>
                 )}
-                <ScrollView style={[{ paddingHorizontal: 20 }, maxHeight ? { maxHeight: height * maxHeight } : {}]}>
+                <ScrollView style={[{ paddingHorizontal: 20 }]}>
                     {children}
                 </ScrollView>
                 {visabledButtons &&

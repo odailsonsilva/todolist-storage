@@ -28,6 +28,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
     const dbTodo = useTodoDB();
     const { user } = useAuthContext();
 
+
     const addTask = (task: ITodoDTO) => {
         try {
             const newTask: IDBTask = { ...task, synced: false, action: 'create', _id: Date.now().toString() || '' };
@@ -76,6 +77,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
                 title: serverTask.title,
                 completed: serverTask.completed,
                 id: serverTask.id,
+                description: serverTask.description,
             }));
             const localTasks = dbTodo.getTasks();
             const mergedTasks: IDBTask[] = [...localTasks];
@@ -97,6 +99,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
                 userId: Number(user?.id!),
                 title: task.title,
                 completed: task.completed,
+                description: task.description,
             };
 
             if (task.action === 'create') {
@@ -127,6 +130,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
                     userId: Number(user?.id!),
                     title: task.title,
                     completed: task.completed,
+                    description: task.description,
                 };
 
                 if (task.action === 'create') {
@@ -158,6 +162,7 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
         const unsubscribe = NetInfo.addEventListener((state) => {
             setIsOffline(!state.isConnected);
             if (state.isConnected) {
+                fetchAndStoreTasks();
                 const unsyncedTasks = dbTodo.getTasks().filter((task: IDBTask) => !task.synced);
                 const hasUnsyncedTasks = unsyncedTasks.length > 0;
                 if (hasUnsyncedTasks) {

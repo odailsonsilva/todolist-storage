@@ -69,14 +69,17 @@ export const SyncDataScreen = () => {
                 }
             />
 
-            <TouchableOpacityBox style={styles.floatingButton} onPress={() => updateModalStateAndOpenModal({
-                onConfirm: () => syncWithServer(),
-            })}
-            >
-                <Text style={styles.floatingButtonText}>
-                    <Icon name="backup" size={24} color="white100" />
-                </Text>
-            </TouchableOpacityBox>
+
+            {syncedTasks.length > 0 && (
+                <TouchableOpacityBox style={styles.floatingButton} onPress={() => updateModalStateAndOpenModal({
+                    onConfirm: () => syncWithServer(),
+                })}
+                >
+                    <Text style={styles.floatingButtonText}>
+                        <Icon name="backup" size={24} color="white100" />
+                    </Text>
+                </TouchableOpacityBox>
+            )}
 
             {renderModal()}
         </Screen>
