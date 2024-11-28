@@ -34,8 +34,8 @@ A React Native project to manage todos with offline-first functionality, error h
 ## **Setup Instructions**
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
-   cd your-repo-name
+   git clone https://github.com/odailsonsilva/todolist-storage
+   cd todolist-storage
    ```
 
 2. Install dependencies:
@@ -118,7 +118,7 @@ https://67479afd38c8741641d72cdf.mockapi.io/api
 
 1. **Login and Error Handling**
    - Users can log in, and appropriate error messages are displayed for invalid inputs.
-   
+
     ![Login](./assets/login.gif)
 
 
