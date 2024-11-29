@@ -46,7 +46,13 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
         try {
             const newTask: IDBTask = { ...updatedFields, synced: false, action: updatedFields.id ? 'update' : 'create', userId: Number(user?.id!) };
             if (isConnected) {
-                await apiTodo.updateTodo({ ...updatedFields, id: updatedFields.id });
+                const todo: ITodoDTO = {
+                    userId: Number(user?.id!),
+                    title: updatedFields.title,
+                    completed: updatedFields.completed,
+                    description: updatedFields.description,
+                };
+                await apiTodo.updateTodo({ ...todo, id: updatedFields.id });
                 newTask.synced = true;
             }
             dbTodo.updateTask(newTask);
