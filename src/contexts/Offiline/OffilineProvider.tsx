@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import NetInfo from '@react-native-community/netinfo';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 import { useAuthContext } from '../Auth/AuthContext';
 import { useToast } from '../Toast/ToastContext';
@@ -25,13 +25,15 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
 
     const dbTodo = useTodoDB();
     const { user } = useAuthContext();
+    const { isConnected } = useNetInfo();
 
-    console.log({ user });
-
-
-    const addTask = (task: ITodoDTO) => {
+    const addTask = async (task: ITodoDTO) => {
         try {
             const newTask: IDBTask = { ...task, synced: false, action: 'create', _id: Date.now().toString() || '', userId: Number(user?.id!) };
+            if (isConnected) {
+                await apiTodo.createTodo(task);
+                newTask.synced = true;
+            }
             dbTodo.addTask(newTask);
             setTasks([...dbTodo.getTasks()]);
             showToast({ message: 'Task added successfully', type: 'success', title: 'Success' });
@@ -40,9 +42,14 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
         }
     };
 
-    const editTask = (updatedFields: IDBTask) => {
+    const editTask = async (updatedFields: IDBTask) => {
         try {
-            dbTodo.updateTask({ ...updatedFields, action: updatedFields.id ? 'update' : 'create', synced: false, userId: Number(user?.id!) });
+            const newTask: IDBTask = { ...updatedFields, synced: false, action: updatedFields.id ? 'update' : 'create', userId: Number(user?.id!) };
+            if (isConnected) {
+                await apiTodo.updateTodo({ ...updatedFields, id: updatedFields.id });
+                newTask.synced = true;
+            }
+            dbTodo.updateTask(newTask);
             setTasks([...dbTodo.getTasks()]);
             showToast({ message: 'Task updated successfully', type: 'success', title: 'Success' });
         } catch (error) {
@@ -50,9 +57,17 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
         }
     };
 
-    const deleteTask = (updatedFields: IDBTask) => {
+    const deleteTask = async (updatedFields: IDBTask) => {
         if (updatedFields?.id) {
-            dbTodo.updateTask({ ...updatedFields, action: 'delete', synced: false, userId: Number(user?.id!) });
+            if (isConnected) {
+                await apiTodo.deleteTodo(updatedFields.id!);
+                dbTodo.deleteLocalTask(updatedFields);
+                setTasks([...dbTodo.getTasks()]);
+                showToast({ message: 'Task deleted successfully', type: 'success', title: 'Success' });
+                return;
+            }
+            const newTask: IDBTask = { ...updatedFields, synced: false, action: 'delete', userId: Number(user?.id!) };
+            dbTodo.updateTask(newTask);
             setTasks([...dbTodo.getTasks()]);
             showToast({ message: 'Task deleted successfully', type: 'success', title: 'Success' });
         } else {
@@ -87,7 +102,6 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
 
             serverTasksNotInLocal.forEach((task) => dbTodo.addTask(task));
             setTasks(mergedTasks);
-
         } catch (error) {
             console.error('Error fetching and storing tasks', error);
         }
@@ -101,7 +115,6 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
                 completed: task.completed,
                 description: task.description,
             };
-            console.log({ todo });
             if (task.action === 'create') {
                 await apiTodo.createTodo(todo);
             } else if (task.action === 'update') {
@@ -157,19 +170,15 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
     }, [user]);
 
     useEffect(() => {
-        const unsubscribe = NetInfo.addEventListener((state) => {
-            setIsOffline(!state.isConnected);
-            if (state.isConnected) {
-                const unsyncedTasks = dbTodo.getTasks().filter((task: IDBTask) => !task.synced);
-                const hasUnsyncedTasks = unsyncedTasks.length > 0;
-                if (hasUnsyncedTasks) {
-                    setOpen(true);
-                }
+        setIsOffline(!isConnected);
+        if (isConnected) {
+            const unsyncedTasks = dbTodo.getTasks().filter((task: IDBTask) => !task.synced);
+            const hasUnsyncedTasks = unsyncedTasks.length > 0;
+            if (hasUnsyncedTasks) {
+                setOpen(true);
             }
-        });
-
-        return () => unsubscribe();
-    }, [user]);
+        }
+    }, [isConnected]);
 
 
     return (
@@ -219,4 +228,5 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
         </OfflineContext.Provider>
     );
 };
+
 
