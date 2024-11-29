@@ -31,8 +31,9 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
         try {
             const newTask: IDBTask = { ...task, synced: false, action: 'create', _id: Date.now().toString() || '', userId: Number(user?.id!) };
             if (isConnected) {
-                await apiTodo.createTodo(task);
+                const response = await apiTodo.createTodo(task);
                 newTask.synced = true;
+                newTask.id = response.data?.id;
             }
             dbTodo.addTask(newTask);
             setTasks([...dbTodo.getTasks()]);
@@ -53,13 +54,15 @@ export const OfflineProvider = ({ children }: { children: React.ReactNode }) => 
                     description: newTask.description,
                     id: newTask.id,
                 };
-                await apiTodo.updateTodo(todo);
+                const response = await apiTodo.updateTodo(todo);
+                newTask.id = response.data?.id;
                 newTask.synced = true;
             }
             dbTodo.updateTask(newTask);
             setTasks([...dbTodo.getTasks()]);
             showToast({ message: 'Task updated successfully', type: 'success', title: 'Success' });
         } catch (error) {
+            console.log({ error });
             showToast({ message: 'Error to update task', type: 'error', title: 'Error' });
         }
     };
